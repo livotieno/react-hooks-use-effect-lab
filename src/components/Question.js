@@ -1,9 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
+// destructure directly
 function Question({ question, onAnswered }) {
+  // state
   const [timeRemaining, setTimeRemaining] = useState(10);
 
   // add useEffect code
+  // runs every time timeRemaining changes
+  useEffect(() => {
+    let intervalId;
+
+    if (timeRemaining > 0) {
+      intervalId = setTimeout(() => {
+        setTimeRemaining((timeRemaining) => {
+          return timeRemaining - 1;
+        });
+      }, 1000);
+    }
+
+    // cleanup function
+    return () => {
+      clearTimeout(intervalId);
+    };
+  }, [timeRemaining]);
+
+  // time lapse
+  // runs every time timeRemaining or onAnswered changes
+  useEffect(() => {
+    if (timeRemaining === 0) {
+      setTimeRemaining(10);
+      onAnswered(false);
+    }
+  }, [timeRemaining, onAnswered]);
 
   function handleAnswer(isCorrect) {
     setTimeRemaining(10);
